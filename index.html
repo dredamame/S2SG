@@ -1,296 +1,577 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <title>Cookie check</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+    S2S Generator (Symptom-to-Subjective EMR Note Generator)
+    Copyright (c) 2026. All Rights Reserved.
+    Unauthorized copying, redistribution, or modification of this code is strictly prohibited.
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S2S Generator</title>
+    <!-- Embedded Base64 SVG Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeT0iNiIgZmlsbD0iIzEyMTgyNCIvPjxwYXRoIGQ9Ik0xMyA4aDZ2NWg1djZoLTV2NWgtNnYtNWgtNXYtNmg1eiIgZmlsbD0iI2VjYzk0YiIvPjwvc3ZnPg==">
     <style>
-      :root {
-        color-scheme: light dark;
-      }
-
-      body {
-        font-family: 'Inter', Helvetica, Arial, sans-serif;
-        background: light-dark(#F8F8F7, #191919);
-        color: light-dark(#1f1f1f, #e3e3e3);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-        text-align: center;
-      }
-
-      .container {
-        background: light-dark(#FFFFFF, #1F1F1F);
-        padding: 32px;
-        border-radius: 16px;
-        border: 1px solid light-dark(#E2E3E4, #3E3E3E);
-        max-width: min(80%, 500px);
-        width: 100%;
-        color: light-dark(#2B2D31, #D4D4D4);
-      }
-
-      h1 {
-        font-size: 20px;
-        font-weight: 500;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-        color: light-dark(#2B2D31, #D4D4D4);
-      }
-
-      p {
-        font-size: 14px;
-        color: light-dark(#2B2D31, #D4D4D4);
-        line-height: 21px;
-        margin: 0 0 1.5rem 0;
-      }
-
-      .icon {
-        margin-bottom: 1rem;
-        line-height: 0;
-      }
-
-      .button-container {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 2rem;
-      }
-
-      button {
-        background-color: light-dark(#fff, #323232);
-        color: light-dark(#2B2D31, #FCFCFC);
-        border: 1px solid light-dark(#E2E3E4, #3E3E3E);
-        border-radius: 12px;
-        padding: 8px 12px;
-        font-size: 14px;
-        line-height: 21px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        font-weight: 400;
-        font-family: 'Inter', Helvetica, Arial, sans-serif;
-        width: 100%;
-      }
-
-      button:hover {
-        background-color: light-dark(#EAEAEB, #424242);
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      /* Loading Spinner Animation */
-      .spinner {
-        margin: 0 auto 1.5rem auto;
-        width: 40px;
-        height: 40px;
-        border: 4px solid light-dark(#f0f0f0, #262626);
-        border-top: 4px solid light-dark(#076eff, #87a9ff); /* Blue color */
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-
-      .logo {
-        border-radius: 10px;
-        display: block;
-        margin: 0 auto 2rem auto;
-      }
-
-      .logo.hidden {
-        display: none;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
+        :root {
+            --bg-main: #121824;
+            --card-bg: #1e2640;
+            --card-border: #2d3748;
+            --text-main: #e2e8f0;
+            --text-sub: #a0aec0;
+            --accent-gold: #ecc94b;
+            --accent-amber: #f6ad55;
+            
+            --btn-copy-bg: #2b6cb0;
+            --btn-copy-hover: #3182ce;
+            --btn-reset-bg: #374151;
+            --btn-reset-hover: #4b5563;
+            --input-bg: #141b2d;
         }
-        100% {
-          transform: rotate(360deg);
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
-      }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--card-border);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--accent-gold);
+            font-size: 1.4rem;
+            border-bottom: 2px solid var(--card-border);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .version-badge {
+            font-size: 0.75rem;
+            background: var(--input-bg);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: normal;
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* 2-Column Layout: System -> Symptom */
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+            min-height: 420px;
+        }
+
+        .column-panel {
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-amber);
+            margin-bottom: 12px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 6px;
+        }
+
+        /* Layer 1: Organ System List */
+        .system-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .system-item {
+            padding: 10px 14px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            color: var(--text-sub);
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .system-item:hover {
+            color: var(--text-main);
+            border-color: var(--accent-gold);
+        }
+
+        .system-item.active {
+            background: var(--accent-gold);
+            color: #1a202c;
+            border-color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        /* Layer 2: Symptom Panel */
+        .tier2-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+            max-height: 440px;
+            padding-right: 4px;
+        }
+
+        .control-group-inline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--card-bg);
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            flex-wrap: wrap;
+        }
+
+        .control-group-inline label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+
+        .control-group-inline select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--card-border);
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card-bg);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .checkbox-label:hover {
+            background: #1e293b;
+            border-color: var(--accent-gold);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--accent-gold);
+            cursor: pointer;
+        }
+
+        /* Dynamic Detail Modifiers Section */
+        .detail-modifiers-panel {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(246, 173, 85, 0.05);
+            border: 1px solid rgba(246, 173, 85, 0.3);
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+
+        .detail-modifiers-panel.show {
+            display: flex;
+        }
+
+        .modifier-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.83rem;
+        }
+
+        .modifier-row label {
+            width: 170px;
+            color: var(--accent-amber);
+            font-weight: 600;
+        }
+
+        .modifier-row select {
+            flex: 1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--card-border);
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            font-size: 0.83rem;
+            outline: none;
+        }
+
+        /* Custom Symptom Adder */
+        .add-symptom-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .add-symptom-input {
+            flex: 1;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .btn-add {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            background: var(--card-border);
+        }
+
+        /* Output Box Area */
+        .output-box {
+            border-top: 1px solid var(--card-border);
+            padding-top: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 90px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            font-family: "Consolas", "Courier New", monospace;
+            font-size: 0.92rem;
+            resize: vertical;
+            box-sizing: border-box;
+            background-color: var(--input-bg);
+            color: #43d9ad;
+            line-height: 1.4;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-clear {
+            background: var(--btn-reset-bg);
+            color: var(--text-sub);
+            flex: 1;
+        }
+
+        .btn-clear:hover {
+            background: var(--btn-reset-hover);
+            color: var(--text-main);
+        }
+
+        .btn-copy {
+            background: var(--btn-copy-bg);
+            color: #ffffff;
+            flex: 2;
+        }
+
+        .btn-copy:hover {
+            background: var(--btn-copy-hover);
+        }
+
+        /* Footer Copyright Area */
+        .footer-copyright {
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        .toast {
+            visibility: hidden;
+            min-width: 220px;
+            background-color: #2b6cb0;
+            color: #ffffff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px 16px;
+            position: fixed;
+            z-index: 10;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .toast.show {
+            visibility: visible;
+            animation: fadein 0.3s, fadeout 0.5s 1.5s;
+        }
+
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
-  </head>
-  <body>
-    <div class="container">
-      <img
-        class="logo"
-        src="https://www.gstatic.com/images/branding/productlogos/ai_studio/v1/web-512dp/logo_ai_studio_color_1x_web_512dp.png"
-        alt="AI Studio Logo"
-        width="256"
-        height="256"
-      />
-      <div class="spinner"></div>
-      <div id="error-ui" class="hidden">
-        <div class="icon">
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="48px"
-            height="48px"
-            fill="#D73A49"
-          >
-            <path
-              d="M12,2C6.486,2,2,6.486,2,12s4.486,10,10,10s10-4.486,10-10S17.514,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"
-            />
-          </svg>
+</head>
+<body>
+
+<div class="container">
+    <h2>
+        <div>
+            S2S Generator
+            <span class="subtitle">Checklist-based Symptom-to-Subjective EMR/HIS Note Generator</span>
         </div>
-        <div id="stepOne" class="text-container">
-          <h1>Action required to load your app</h1>
-          <p>
-            It looks like your browser is blocking a required security cookie, which is common on
-            older versions of iOS and Safari.
-          </p>
-          <div class="button-container">
-            <button id="authInSeparateWindowButton" onclick="redirectToReturnUrl(true)">Authenticate in new window</button>
-          </div>
+        <span class="version-badge">v2.9.0</span>
+    </h2>
+
+    <div class="two-column-layout">
+        <!-- System Navigation Column -->
+        <div class="column-panel">
+            <div class="column-title">System</div>
+            <div class="system-list" id="system-container"></div>
         </div>
-        <div id="stepTwo" class="text-container hidden">
-          <h1>Action required to load your app</h1>
-          <p>
-            It looks like your browser is blocking a required security cookie, which is common on
-            older versions of iOS and Safari.
-          </p>
-          <div class="button-container">
-            <button id="interactButton" onclick="redirectToReturnUrl(false)">Close and continue</button>
-          </div>
+
+        <!-- Symptom Details Column -->
+        <div class="column-panel">
+            <div class="column-title">Symptom</div>
+            <div class="tier2-content">
+                
+                <!-- Onset / Duration / Course Module -->
+                <div class="control-group-inline">
+                    <label for="duration">Onset / Duration:</label>
+                    <select id="duration" onchange="generateText()">
+                        <option value="for 1 day">1 day</option>
+                        <option value="for 2 days" selected>2 days</option>
+                        <option value="for 3 days">3 days</option>
+                        <option value="for 4-5 days">4-5 days</option>
+                        <option value="for 1 week">1 week</option>
+                        <option value="for 1 month">1 month</option>
+                        <option value="intermittently for weeks">Intermittent (weeks)</option>
+                    </select>
+
+                    <label for="course">Course:</label>
+                    <select id="course" onchange="generateText()">
+                        <option value="unspecified" selected>Unspecified</option>
+                        <option value="progressive worsening">Worsening</option>
+                        <option value="fluctuating pattern">Fluctuating</option>
+                        <option value="stable condition">Stable</option>
+                        <option value="gradual improvement">Improving</option>
+                    </select>
+                </div>
+
+                <!-- Chief Complaint Symptoms Checklist -->
+                <div>
+                    <div class="section-label">Symptoms:</div>
+                    <div class="options-grid" id="symptoms-grid"></div>
+                </div>
+
+                <!-- Dynamic Detail Modifiers Container -->
+                <div class="detail-modifiers-panel" id="detail-modifiers-panel">
+                    <div class="section-label" style="margin-bottom: 2px;">Symptom Characteristics:</div>
+                    
+                    <!-- Respiratory Modifiers -->
+                    <div class="modifier-row" id="mod-headache-row" style="display:none;">
+                        <label for="mod-headache">Headache Severity:</label>
+                        <select id="mod-headache" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="mild">Mild</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="severe">Severe</option>
+                        </select>
+                    </div>
+
+                    <div class="modifier-row" id="mod-rhinorrhea-row" style="display:none;">
+                        <label for="mod-rhinorrhea">Rhinorrhea Discharge:</label>
+                        <select id="mod-rhinorrhea" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="clear watery discharge">Clear watery</option>
+                            <option value="thick mucopurulent discharge">Thick mucopurulent</option>
+                            <option value="yellowish-green discharge">Yellowish-green</option>
+                        </select>
+                    </div>
+
+                    <div class="modifier-row" id="mod-cough-row" style="display:none;">
+                        <label for="mod-cough">Cough Character:</label>
+                        <select id="mod-cough" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="dry cough">Dry cough</option>
+                            <option value="productive cough">Productive cough</option>
+                            <option value="paroxysmal cough">Paroxysmal cough</option>
+                        </select>
+                    </div>
+
+                    <div class="modifier-row" id="mod-sputum-row" style="display:none;">
+                        <label for="mod-sputum">Sputum Type:</label>
+                        <select id="mod-sputum" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="whitish mucoid sputum">Whitish mucoid</option>
+                            <option value="yellowish purulent sputum">Yellowish purulent</option>
+                            <option value="blood-tinged sputum">Blood-tinged</option>
+                        </select>
+                    </div>
+
+                    <div class="modifier-row" id="mod-fever-row" style="display:none;">
+                        <label for="mod-fever">Fever Status:</label>
+                        <select id="mod-fever" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="Low grade fever (~37.8°C)">Low grade (~37.8°C)</option>
+                            <option value="Moderate fever (~38.5°C)">Moderate (~38.5°C)</option>
+                            <option value="High grade fever (~39.0°C)">High grade (~39.0°C)</option>
+                        </select>
+                    </div>
+
+                    <!-- GI Modifiers -->
+                    <div class="modifier-row" id="mod-abdpain-row" style="display:none;">
+                        <label for="mod-abdpain">Abdominal Pain Pattern:</label>
+                        <select id="mod-abdpain" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="crampy pain">Crampy pain</option>
+                            <option value="dull ache">Dull ache</option>
+                            <option value="postprandial pain">Postprandial pain</option>
+                            <option value="hunger pain">Hunger pain</option>
+                        </select>
+                    </div>
+
+                    <div class="modifier-row" id="mod-vomiting-row" style="display:none;">
+                        <label for="mod-vomiting">Vomiting Content:</label>
+                        <select id="mod-vomiting" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="non-bilious food content">Non-bilious food content</option>
+                            <option value="bilious vomitus">Bilious vomitus</option>
+                            <option value="coffee-ground vomitus">Coffee-ground vomitus</option>
+                        </select>
+                    </div>
+
+                    <!-- Neuro Modifiers -->
+                    <div class="modifier-row" id="mod-tinnitus-row" style="display:none;">
+                        <label for="mod-tinnitus">Tinnitus Location:</label>
+                        <select id="mod-tinnitus" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="right ear">Right ear</option>
+                            <option value="left ear">Left ear</option>
+                        </select>
+                    </div>
+
+                    <div class="modifier-row" id="mod-hearingloss-row" style="display:none;">
+                        <label for="mod-hearingloss">Hearing Loss Location:</label>
+                        <select id="mod-hearingloss" onchange="generateText()">
+                            <option value="unspecified" selected>Unspecified</option>
+                            <option value="right ear">Right ear</option>
+                            <option value="left ear">Left ear</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Custom Symptom Adder -->
+                <div class="add-symptom-row">
+                    <input type="text" id="custom-symptom-input" class="add-symptom-input" placeholder="Add custom symptom..." onkeydown="handleKeyPress(event)">
+                    <button class="btn-add" onclick="addCustomSymptom()">+ Add</button>
+                </div>
+
+            </div>
         </div>
-        <div id="stepThree" class="text-container hidden">
-          <h1>Almost there!</h1>
-          <p>
-            Grant permission for the required security cookie below.
-          </p>
-          <div class="button-container">
-            <button id="grantPermissionButton" onclick="grantStorageAccess()">Grant permission</button>
-          </div>
-        </div>
-      </div>
     </div>
-    <script>
-      const AUTH_FLOW_TEST_COOKIE_NAME = '__SECURE-aistudio_auth_flow_may_set_cookies';
-      const COOKIE_VALUE = 'true';
 
-      function getCookie(name) {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          let cookie = cookies[i].trim();
-          if (cookie.startsWith(name + '=')) {
-            return cookie.substring(name.length + 1);
-          }
-        }
-        return null;
-      }
+    <!-- Output Box Area -->
+    <div class="output-box">
+        <div style="font-size: 0.85rem; color: var(--accent-amber); font-weight: bold; margin-bottom: 6px;">Generated SOAP Subjective (S) Text:</div>
+        <textarea id="output" readonly placeholder="Select parameters above to generate SOAP text..."></textarea>
+        
+        <div class="btn-group">
+            <button class="btn btn-clear" onclick="clearAll()">Reset All</button>
+            <button class="btn btn-copy" onclick="copyToClipboard()">Copy to Clipboard</button>
+        </div>
+    </div>
 
-      function setAuthFlowTestCookie() {
-        // Set the cookie's TTL to 1 minute. This is a short lived cookie because it is only used
-        // when the user does not have an auth token or their auth token needs to be reset.
-        // Making this cookie too long-lived allows the user to get into a state where they can't
-        // mint a new auth token.
-        document.cookie = `${AUTH_FLOW_TEST_COOKIE_NAME}=${COOKIE_VALUE}; Path=/; Secure; SameSite=None; Domain=${window.location.hostname}; Partitioned; Max-Age=60;`;
-      }
+    <!-- Copyright Footer Area -->
+    <div class="footer-copyright" id="footer-copyright">
+        S2S Generator v2.9.0 © 2026. All Rights Reserved.
+    </div>
+</div>
 
-      /**
-       * Returns true if the test cookie is set, false otherwise.
-       */
-      function authFlowTestCookieIsSet() {
-        return getCookie(AUTH_FLOW_TEST_COOKIE_NAME) === COOKIE_VALUE;
-      }
+<div id="toast" class="toast">Copied to clipboard successfully!</div>
 
-      /**
-       * Redirects to the return url. If autoClose is true, then the return url will be opened in a
-       * new window, and it will be closed automatically when the page loads.
-       * Options:
-       *   storageAccessGranted: if true, appends __storage_access_granted=1 to
-       *   the return url so the Lua auth script can set the test cookie
-       *   server-side (needed for Safari/iOS where document.cookie is blocked).
-       */
-      async function redirectToReturnUrl(autoClose, storageAccessGranted = false) {
-        const initialReturnUrlStr = new URLSearchParams(window.location.search).get('return_url');
-        const returnUrl = initialReturnUrlStr ? new URL(initialReturnUrlStr) : null;
+<script>
+const _0x299a5a=_0x2f8c;(function(_0x237869,_0x2ba1b1){const _0xda0466=_0x2f8c,_0x5eadec=_0x237869();while(!![]){try{const _0x352c03=parseInt(_0xda0466(0x138))/(0x1a*0x10d+-0x150d+-0x2*0x322)*(parseInt(_0xda0466(0x15f))/(-0x2088+-0x1*-0x287+0x1e03))+-parseInt(_0xda0466(0x99))/(-0x1*0x647+-0x3d3*-0x7+-0x147b)*(-parseInt(_0xda0466(0x192))/(-0x868+-0xbc6+0x1432))+parseInt(_0xda0466(0x120))/(-0x1e07+0xd7c*0x2+-0x18a*-0x2)*(-parseInt(_0xda0466(0x141))/(0x1919+0x3*-0xaa6+0x6df))+-parseInt(_0xda0466(0x163))/(-0x861+-0xf38+0x17a0)*(-parseInt(_0xda0466(0xd5))/(0xb3e+0x19ae+-0x24e4))+parseInt(_0xda0466(0x1c3))/(0x1e6d*-0x1+0x1fc*-0x11+0x4032)*(parseInt(_0xda0466(0x15e))/(0xe61+-0x2518*0x1+0x19*0xe9))+parseInt(_0xda0466(0x14c))/(-0x113b+-0x1f*-0x11f+-0x37f*0x5)+-parseInt(_0xda0466(0x1b7))/(0x17aa+0x1dd5*0x1+-0x3573)*(parseInt(_0xda0466(0x156))/(0x1*-0x1172+0x21a6+-0x1027));if(_0x352c03===_0x2ba1b1)break;else _0x5eadec['push'](_0x5eadec['shift']());}catch(_0x3c879e){_0x5eadec['push'](_0x5eadec['shift']());}}}(_0x1ac1,-0x3*-0x5aba1+0x52711*-0x1+-0x8361));const _0x368eb5={};_0x368eb5[_0x299a5a(0xb7)]=_0x299a5a(0xa4)+'atory',_0x368eb5['sympto'+'ms']=[_0x299a5a(0x10f)+_0x299a5a(0x1e4),'Dizzin'+_0x299a5a(0xe6)+')',_0x299a5a(0x187)+_0x299a5a(0x1d2)+'+)',_0x299a5a(0xc4)+_0x299a5a(0x185)+_0x299a5a(0xbe)+'+)',_0x299a5a(0xe0)+'hroat\x20'+_0x299a5a(0xdf),_0x299a5a(0x11f)+'ness\x20('+'+)',_0x299a5a(0xa0)+_0x299a5a(0xdf),'Sputum'+_0x299a5a(0x114),_0x299a5a(0x1fa)+_0x299a5a(0xdf),_0x299a5a(0x9e)+_0x299a5a(0x114),_0x299a5a(0x14b)+_0x299a5a(0x1c8)+_0x299a5a(0x186)+_0x299a5a(0x1da),_0x299a5a(0xd7)+_0x299a5a(0x1ef)];const _0x20fe52={};_0x20fe52['name']='Gastro'+_0x299a5a(0xe1)+_0x299a5a(0x94),_0x20fe52[_0x299a5a(0xdd)+'ms']=[_0x299a5a(0x13c)+_0x299a5a(0xcf)+_0x299a5a(0x1ed),_0x299a5a(0x13c)+_0x299a5a(0xd1)+_0x299a5a(0x112)+_0x299a5a(0x114),_0x299a5a(0x9f)+_0x299a5a(0x106),_0x299a5a(0x1db)+_0x299a5a(0xd3)+'\x20(+)',_0x299a5a(0x1a7)+_0x299a5a(0xf8)+_0x299a5a(0x1ac),_0x299a5a(0x165)+_0x299a5a(0xbb)+_0x299a5a(0xf4)+')',_0x299a5a(0x178)+'\x20(+)',_0x299a5a(0x1c7)+_0x299a5a(0xe9),_0x299a5a(0xec)+'ppetit'+_0x299a5a(0xaa),_0x299a5a(0x10d)+'pation'+_0x299a5a(0x114),_0x299a5a(0x1fe)+_0x299a5a(0x176)+_0x299a5a(0xbc)+_0x299a5a(0x114),_0x299a5a(0x196)+_0x299a5a(0x203)+')',_0x299a5a(0x1fa)+_0x299a5a(0xdf)];const _0x273a74={};_0x273a74[_0x299a5a(0xb7)]=_0x299a5a(0x121)+_0x299a5a(0x1f5),_0x273a74[_0x299a5a(0xdd)+'ms']=[_0x299a5a(0x10f)+_0x299a5a(0x1e4),'Dizzin'+_0x299a5a(0xe6)+')',_0x299a5a(0x1fb)+_0x299a5a(0x191)+_0x299a5a(0x14a)+_0x299a5a(0x114),_0x299a5a(0x111)+_0x299a5a(0x1ab),'Hearin'+_0x299a5a(0x91)+_0x299a5a(0x114),_0x299a5a(0xac)+_0x299a5a(0x1ef),_0x299a5a(0x1eb)+_0x299a5a(0xc2)+_0x299a5a(0x1ed),_0x299a5a(0x122)+_0x299a5a(0x1a2)+_0x299a5a(0xdf),_0x299a5a(0xb8)+_0x299a5a(0x183)+_0x299a5a(0x1ac),_0x299a5a(0xe2)+_0x299a5a(0x1bc)+_0x299a5a(0x114)];const _0x449520={};_0x449520[_0x299a5a(0xb7)]=_0x299a5a(0x1cb)+_0x299a5a(0x1f2)+'y',_0x449520['sympto'+'ms']=[_0x299a5a(0xc8)+_0x299a5a(0x1da),_0x299a5a(0x14e)+_0x299a5a(0x197)+_0x299a5a(0x1cf)+'(+)',_0x299a5a(0x14e)+_0x299a5a(0x1e2)+_0x299a5a(0xe3)+')',_0x299a5a(0x173)+_0x299a5a(0x16c)+'charge'+_0x299a5a(0x114),_0x299a5a(0xe7)+'ria\x20(+'+')',_0x299a5a(0x1df)+_0x299a5a(0x102)+_0x299a5a(0xdb)+_0x299a5a(0x131)+')','Hesita'+_0x299a5a(0xe3)+')'];const _0x3b7d54={};_0x3b7d54[_0x299a5a(0xb7)]=_0x299a5a(0xbd)+_0x299a5a(0x13f)+'ll',_0x3b7d54[_0x299a5a(0x199)+_0x299a5a(0x1aa)]=!![],_0x3b7d54[_0x299a5a(0xdd)+'ms']=[_0x299a5a(0x1f7)+_0x299a5a(0x15a)+'ll',_0x299a5a(0x1d6)+_0x299a5a(0xb9)+_0x299a5a(0x1f8),_0x299a5a(0x125)+_0x299a5a(0x19b)+_0x299a5a(0x16b),_0x299a5a(0x9a)+_0x299a5a(0x149)+_0x299a5a(0x1c1)+'t','Good\x20m'+_0x299a5a(0x1bb)+'ion\x20co'+'mplian'+'ce'];function _0x1ac1(){const _0x3c3c0b=['s2v5uhjL','y29TzM9Y','zt0Iy2HL','mtm0nJGXneLjyM5uBW','BMCGka','Bgrqz24','sezoq0q','vM9TAxrP','BgL6zwqG','wuTUwNK','DLjHtvi','r2vUAxrV','C2XPy2u','DMvY','B3b1rNq','DwvUy3KG','Aw5VCNjO','Dvzquxy','CMHLysaO','DwDO','i3n5Bxb0','zMv2zxi','qLaGD2vS','Dxr1Bq','DM9TAxrP','rw50zxi','ysaOkYK','vgfYCNKG','ChrVBq','zgv0ywLS','yvndthq','u3vWCMfW','y2HLy2TL','yxrVCNK','Esb1CMDL','y291CNnL','AguGkcSP','qM9ZChm','Bxb0B20T','tw9hrha','lMn1C3rV','Bs1ZEw1W','z2v0rNvS','uMfKAwf0','weLZt1i','Aw4GkcSP','DwHgu0e','C3mGkcSP','AgfUzgXL','u3P2vhe','DxjPBMfY','ufHlu2C','verwy3e','B2DPy2fS','u3LZDgvT','uMvNDwXH','CM9SBgvK','Aw5Uzxju','rMv2zxiG','vMvYDgLN','zgf0yxnL','DhLWzq','qwnPzcbY','ywn0AxzL','AMrPsuS','z2v0rgf0','C3zYEg4','DxjUicGR','zYbSB3nZ','igHLywrH','uZjtieDL','Aw5HBa','ksaOkYK','C2HVDW','u1nuy0O','zMXLEa','m1PlAwnvrG','tM8Gywn1','yMvyvhy','y29WEvrV','sxnPCw8','q2HPBgXZ','rgLHCNjO','q291z2GG','we52AgK','zvLmr2C','rgLZy29T','uMvZCgLY','B3v0Chv0','ChLmDeW','sKP4wwO','vuXgBfG','shbpu0S','zsaOkYK','BwvUDej5','tNvTyM5L','CMvZCgLY','CMvWBgfJ','AM9PBG','Dw5ZCgvJ','lwnVBNrH','Bw1HBMq','BgfIzwW','u3b1DhvT','ywrKq3vZ','C0Tdrg8','BMfTzq','tgLTyIb3','Bc1JB250','C3LZDgvT','Aw4GC3rV','Dgf0Aw9U','q2HYB25P','DgLVBIaO','CIb2mI45','lM1VzgLM','ywjKB21P','Aw5NihbH','q1vLz0K','tMfZywWG','zwXLy3rV','Dxr1Bs1Y','BunOyw5N','rhLZDxjP','ChvZAa','rgDLBLG','CMnovLy','DMvYlxjV','Dg9HC3q','z3fosKy','BMfSihbH','CwLJEuG','BMfSigjS','C0TkEvO','C3rVB2XZ','zhbHAw4T','mJu5mJCXmNfODfnPCq','y2HYB25P','v2vHA25L','yxjPBMDS','zgL2','Bw9KlwzL','AxnJB21M','Dg9mB3DL','C3LTChrV','lwL0zw0G','kcSP','u29Yzsb0','Aw50zxn0','vw5ZDgvH','BMn5icGR','vhjJy2S','zhbHAw4','zxnZicGR','sgvTyxr1','BhvHDgLV','BMCGkcSP','AwqGAw5W','sxDjEwG','ug9VCIbH','B3nZlxjV','yNHeCMq','yKvKtNO','D3jqqLa','z2vUzxjH','BML3z2u','ELztCfO','B2XZicGR','DeDVqMG','z2fjDwO','Dg9TlwXH','ihn0B29S','DwDOlxjV','ywrK','t3j0uhu','CfbNz3m','vw91DwC','y1jysxm','zwrjBMrL','A2vK','y2XHC3nm','DwjPyYbK','AePQCgu','EunkA04','q2HPBgq','zweGkcSP','ifjLC2vY','Aw5PDfvj','BM9Uzq','lJaGWQKG','yxbWzw5K','qNbTs3O','q29UC3rP','ChjLDMvU','sgvHzgfJ','CuTeEgy','vgLUBML0','B2f0Aw5N','y2HHCKf0','icGRkq','lIbbBgWG','wuz5BM4','qNrqy3y','C3b1DhvT','AgvHCMLU','y29WEq','BuTLEq','CKfSBa','BxmTz3jP','BMv1CM8','sg9HCNnL','oduZntvKExjhD1q','tMv1CM9S','ugfYzxn0','y3jLyxrL','ANbSB2m','qMXVB2qG','DgLUBML0','lxn5Bxb0','CxvLCNLt','BgvUz3rO','A2v5','CgfKu3rH','y3rPB24G','uKfIAfK','wffgwuu','yLvpD2S','zM9YrwfJ','B3j0icGR','Bw9KlwHL','B3GTBgfI','Axn0','ALPcs00','DMvKlG','lw1VzgLM','mtmWwu5hzuDp','B25JAgfU','sNHds3e','BLHhzuy','qwjKB21P','uM91DgLU','zxH0','yYbszwzP','DerLzMf1','ndC0CMnrCe94','Bw9KlxjO','CM93','DMfSDwu','BwL0Aw5N','Dg9Tlxn5','vffuAKu','uKvtzKm','DguGzgLZ','Aw5UAw5N','r2vUzxjH','mZqWmZCZv0XOvKT6','AwvYCY1W','vxjPBMfY','A25MDMi','A3nyrxe','r3rNu0i','DxrBDhLW','Aw5Uzxji','C2vSzwn0','CKnHC2u','mJKXotmXoxLzy2Hesq','yMniBe0','zM9VDgvY','Aw5WDxq','CIbYzwzP','vuf2Eu4','BfLLyxi','BgWGzxzH','mtbnDKzbz2m','mtm2odHbvKLxzeS','ve1m','DxmGka','zxHLy0nV','mJHUvNHoswO','Bw9KlxrP','txvJDxmG','AwvYlxjV','Cerkyw0','EvrqBxq','Aw4Gka','y291z2G','C3rHyMXL','ywWGzgLZ','B20TAw5W','Bw9KlwnV','lxjVDW','vgv4De5V','y2HLy2TI','rKDbEve','qwjUB3jT','weHrt3y','B3r6ugS','zwD1CMDP','A1jez3u','tMf1C2vH','BvbbvxG','Ewf0sMS','AwzPzwq','uMLNAhrZ','Bw9KlxnW','wNfIBNq','DNvWCxC','CMHLyq','BMvYyxrV','DgvuzxH0','zwfRBMvZ','yMvS','y29Uz2vZ','BxLHBgDP','uMHPBM9Y','y2XHC3no','yKXcBe0','Aw5LCG','Bw9KlwfI','y2TIB3GI','rwXLBwvU','Bw9KlxzV','B21ZlwDY','ihbYB2r1','BYaVifnW','mZm5mZe4nefpD2Huuq','Dg9Tu3LT','sfHqreO','yw1L','sgvHCNrI','EsbMCMvX','q3v0uLq','AxndAhjV','ywrHy2HL','C3vNyxiG','y3vZDg9T','BhLotLC','z050ELu','yvrVqvC','CMfuwNq','Cffowey','AgvZAweG','AgvHzgfJ','sgvHCMLU','z2v0rwXL','y2XLyxjb','qMXVB2r5','yw5LBa','weH2qKq','BMLJ','DxmGkcSP','CYaOkYK','wvf4uei','xtPJAgvJ','zgLZCgXH','CMvTB3zL','BM5PDhvZ','C3r5Bgu','DhjPBq','zuf3z0K','A2v5CW','zhvYyxrP','nJbjwNDNv04','q2XPCgjV','z2v0tw9U','DYbZzwXL','zwrPy2f0','zgLUzxnZ','zM9YDa','Dg9vChbL','AwDODa'];_0x1ac1=function(){return _0x3c3c0b;};return _0x1ac1();}function _0x2f8c(_0x32fc33,_0x2a4ec1){_0x32fc33=_0x32fc33-(-0x1771+0x120a+0x8*0xbf);const _0x75ee0f=_0x1ac1();let _0x5a2daa=_0x75ee0f[_0x32fc33];if(_0x2f8c['dmECug']===undefined){var _0x543837=function(_0x467bcd){const _0x4347a3='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x3456d5='',_0x56085e='';for(let _0x1e783c=0xfd*0x1d+-0xb85+-0x1124,_0x2e2dda,_0x462cc5,_0x4b36aa=-0x469*0x8+0x119f+0x3*0x5e3;_0x462cc5=_0x467bcd['charAt'](_0x4b36aa++);~_0x462cc5&&(_0x2e2dda=_0x1e783c%(0x1*0x25ab+0x2188+-0x472f)?_0x2e2dda*(0x2c9*-0xc+-0x743*-0x1+0x1a69)+_0x462cc5:_0x462cc5,_0x1e783c++%(-0x1c87+0xd7a+0xf11))?_0x3456d5+=String['fromCharCode'](-0x111b+0x3*-0xbd6+0x49*0xbc&_0x2e2dda>>(-(-0x140d+0x1*-0xcb1+0x1*0x20c0)*_0x1e783c&-0x1138+-0xbe1+0x15*0x163)):-0x1*-0x1021+-0x8e*-0x1a+-0x1e8d){_0x462cc5=_0x4347a3['indexOf'](_0x462cc5);}for(let _0x1d9e72=-0xb*0x185+0x1*0xb3f+-0xe*-0x64,_0x4ad99c=_0x3456d5['length'];_0x1d9e72<_0x4ad99c;_0x1d9e72++){_0x56085e+='%'+('00'+_0x3456d5['charCodeAt'](_0x1d9e72)['toString'](0x9a3+0xf04*-0x2+-0x1*-0x1475))['slice'](-(-0x755*-0x4+-0x26a4+0x952));}return decodeURIComponent(_0x56085e);};_0x2f8c['lVYzNl']=_0x543837,_0x2f8c['aIkNwq']={},_0x2f8c['dmECug']=!![];}const _0x2773b7=_0x75ee0f[0x647*0x2+0x4*0x3c5+-0x1ba2];_0x2f8c['sNfaIg']!==_0x2773b7&&(_0x2f8c['aIkNwq']={},_0x2f8c['sNfaIg']=_0x2773b7);const _0x512e68=_0x2f8c['aIkNwq'][_0x32fc33];return _0x512e68===undefined?(_0x5a2daa=_0x2f8c['lVYzNl'](_0x5a2daa),_0x2f8c['aIkNwq'][_0x32fc33]=_0x5a2daa):_0x5a2daa=_0x512e68,_0x5a2daa;}const _0x5ce5fa={};_0x5ce5fa[_0x299a5a(0xad)+_0x299a5a(0x1e1)]=_0x368eb5,_0x5ce5fa['gi']=_0x20fe52,_0x5ce5fa[_0x299a5a(0x11e)]=_0x273a74,_0x5ce5fa['gu']=_0x449520,_0x5ce5fa[_0x299a5a(0xd6)+'c']=_0x3b7d54;const systemData=_0x5ce5fa;let activeSystemKey=_0x299a5a(0xad)+_0x299a5a(0x1e1);function initUI(){const _0x67802c=_0x299a5a,_0x27d66f={'WIDxf':function(_0x515f7f){return _0x515f7f();},'QUQdq':function(_0x260280,_0x534d3d){return _0x260280(_0x534d3d);},'jploc':_0x67802c(0xad)+_0x67802c(0x1e1)};updateCopyrightYear(),_0x27d66f['WIDxf'](renderSystems),_0x27d66f['QUQdq'](selectSystem,_0x27d66f[_0x67802c(0x124)]);}function updateCopyrightYear(){const _0x10c0e5=_0x299a5a,_0x24598d={};_0x24598d[_0x10c0e5(0x1e5)]=function(_0x4fce49,_0x3d4f36){return _0x4fce49>_0x3d4f36;},_0x24598d[_0x10c0e5(0xa7)]=_0x10c0e5(0x158)+'-copyr'+_0x10c0e5(0x1bf);const _0x157c33=_0x24598d,_0x55b94a=0x21a+-0xb26*-0x1+-0x556,_0x15f1fc=new Date()[_0x10c0e5(0x1ea)+_0x10c0e5(0x15c)](),_0x6ecacf=_0x157c33[_0x10c0e5(0x1e5)](_0x15f1fc,_0x55b94a)?_0x55b94a+'-'+_0x15f1fc:''+_0x55b94a;document[_0x10c0e5(0x1a5)+_0x10c0e5(0xab)+'Id'](_0x157c33[_0x10c0e5(0xa7)])[_0x10c0e5(0x153)+_0x10c0e5(0x160)]=_0x10c0e5(0x93)+_0x10c0e5(0x181)+_0x10c0e5(0xbf)+_0x10c0e5(0x10a)+_0x6ecacf+(_0x10c0e5(0x115)+_0x10c0e5(0x17c)+_0x10c0e5(0x107)+_0x10c0e5(0x136));}function renderSystems(){const _0x3d5011=_0x299a5a,_0x57e057={};_0x57e057['cRXIs']=_0x3d5011(0xd9),_0x57e057[_0x3d5011(0x200)]=_0x3d5011(0x1ff),_0x57e057[_0x3d5011(0x9b)]=_0x3d5011(0xba)+_0x3d5011(0xb1)+_0x3d5011(0x18a);const _0x22e34c=_0x57e057,_0x2c50fc=document[_0x3d5011(0x1a5)+'mentBy'+'Id'](_0x22e34c[_0x3d5011(0x9b)]);_0x2c50fc[_0x3d5011(0x153)+_0x3d5011(0x160)]='',Object[_0x3d5011(0x1b5)](systemData)[_0x3d5011(0x130)+'h'](_0x329440=>{const _0xe0e14c=_0x3d5011,_0x570627=systemData[_0x329440],_0x4c0d24=document[_0xe0e14c(0x123)+_0xe0e14c(0x18d)+'t'](_0x22e34c[_0xe0e14c(0xfe)]);_0x4c0d24[_0xe0e14c(0x188)+_0xe0e14c(0x195)]=_0xe0e14c(0xba)+_0xe0e14c(0xde)+(_0x329440===activeSystemKey?_0x22e34c[_0xe0e14c(0x200)]:''),_0x4c0d24[_0xe0e14c(0x1f9)+_0xe0e14c(0x13e)]=_0x570627[_0xe0e14c(0xb7)],_0x4c0d24['onclic'+'k']=()=>selectSystem(_0x329440),_0x2c50fc[_0xe0e14c(0x10b)+'Child'](_0x4c0d24);});}function selectSystem(_0x5705af){const _0xee0ad8={'SyUqm':function(_0x361c56){return _0x361c56();}};activeSystemKey=_0x5705af,_0xee0ad8['SyUqm'](renderSystems),renderSymptoms();}function renderSymptoms(){const _0x10bfa6=_0x299a5a,_0xb6f5d4={'FGAyQ':_0x10bfa6(0xb3),'yTPmt':_0x10bfa6(0x171)+_0x10bfa6(0x133)+'el','XHvBD':'input','TvoMG':'checkb'+'ox','sKCDo':_0x10bfa6(0x114),'pyLtL':_0x10bfa6(0x1f7)+_0x10bfa6(0x15a)+'ll','IwIyh':function(_0x118591){return _0x118591();}},_0x45c2c1=document[_0x10bfa6(0x1a5)+_0x10bfa6(0xab)+'Id'](_0x10bfa6(0xdd)+_0x10bfa6(0x11d)+'d');_0x45c2c1[_0x10bfa6(0x153)+_0x10bfa6(0x160)]='';const _0x36da10=systemData[activeSystemKey];if(!_0x36da10)return;_0x36da10[_0x10bfa6(0xdd)+'ms'][_0x10bfa6(0x130)+'h'](_0x4df8d8=>{const _0x5a41b4=_0x10bfa6,_0xf326f7=document[_0x5a41b4(0x123)+_0x5a41b4(0x18d)+'t'](_0xb6f5d4[_0x5a41b4(0x172)]);_0xf326f7['classN'+_0x5a41b4(0x195)]=_0xb6f5d4[_0x5a41b4(0x168)];const _0x119cc6=document[_0x5a41b4(0x123)+_0x5a41b4(0x18d)+'t'](_0xb6f5d4[_0x5a41b4(0x1a9)]);_0x119cc6[_0x5a41b4(0x1fd)]=_0xb6f5d4['TvoMG'],_0x119cc6[_0x5a41b4(0x144)]=_0x4df8d8,_0x119cc6[_0x5a41b4(0x1fc)+'t'][_0x5a41b4(0xdd)+_0x5a41b4(0x11b)]=_0x4df8d8[_0x5a41b4(0xae)+'e'](_0xb6f5d4[_0x5a41b4(0xb6)],'')[_0x5a41b4(0xdc)+_0x5a41b4(0x155)](),_0x119cc6['onchan'+'ge']=handleSymptomChange,_0x4df8d8===_0xb6f5d4[_0x5a41b4(0xa6)]&&(_0x119cc6[_0x5a41b4(0x1e0)+'d']=!![]),_0xf326f7[_0x5a41b4(0x10b)+_0x5a41b4(0x105)](_0x119cc6),_0xf326f7[_0x5a41b4(0x10b)+_0x5a41b4(0x105)](document[_0x5a41b4(0x123)+_0x5a41b4(0x170)+'de']('\x20'+_0x4df8d8[_0x5a41b4(0xae)+'e'](_0xb6f5d4[_0x5a41b4(0xb6)],''))),_0x45c2c1[_0x5a41b4(0x10b)+_0x5a41b4(0x105)](_0xf326f7);}),_0xb6f5d4[_0x10bfa6(0xeb)](updateModifiersVisibility),generateText();}function handleSymptomChange(){const _0x279ba1=_0x299a5a,_0x48b15f={'svrxn':function(_0x6c2cac){return _0x6c2cac();},'qKDxf':function(_0x159445){return _0x159445();}};_0x48b15f[_0x279ba1(0x202)](updateModifiersVisibility),_0x48b15f[_0x279ba1(0x110)](generateText);}function updateModifiersVisibility(){const _0x2d59ed=_0x299a5a,_0x3e9a1={};_0x3e9a1[_0x2d59ed(0x104)]=_0x2d59ed(0x1d4)+_0x2d59ed(0x18f)+_0x2d59ed(0xea)+_0x2d59ed(0x152)+_0x2d59ed(0x1c2)+_0x2d59ed(0x18c)+_0x2d59ed(0x1ae)+'ked',_0x3e9a1[_0x2d59ed(0x1ce)]=_0x2d59ed(0x1a3)+'he',_0x3e9a1[_0x2d59ed(0x135)]=_0x2d59ed(0x16a),_0x3e9a1[_0x2d59ed(0x150)]=_0x2d59ed(0x118),_0x3e9a1[_0x2d59ed(0x1a1)]=_0x2d59ed(0xc1)+_0x2d59ed(0xcf)+'in',_0x3e9a1['mPAUx']=_0x2d59ed(0x1d8)+'ng',_0x3e9a1[_0x2d59ed(0x1c5)]=_0x2d59ed(0x126)+'us',_0x3e9a1['aSCLt']=_0x2d59ed(0x119)+_0x2d59ed(0x91),_0x3e9a1[_0x2d59ed(0x1ca)]='mod-he'+_0x2d59ed(0x19a)+_0x2d59ed(0x16f),_0x3e9a1[_0x2d59ed(0x1e7)]=_0x2d59ed(0x98),_0x3e9a1[_0x2d59ed(0x1ec)]=_0x2d59ed(0x109),_0x3e9a1[_0x2d59ed(0x17f)]=_0x2d59ed(0x16e)+_0x2d59ed(0xf9)+'w',_0x3e9a1[_0x2d59ed(0x17e)]=_0x2d59ed(0x17d)+_0x2d59ed(0xc6)+'ow',_0x3e9a1[_0x2d59ed(0xfc)]=_0x2d59ed(0x18b)+_0x2d59ed(0xd4)+_0x2d59ed(0x143),_0x3e9a1[_0x2d59ed(0xf5)]=_0x2d59ed(0x18e)+_0x2d59ed(0x145)+_0x2d59ed(0x16f),_0x3e9a1[_0x2d59ed(0xef)]=_0x2d59ed(0x164)+_0x2d59ed(0x1b1)+_0x2d59ed(0x16f),_0x3e9a1[_0x2d59ed(0x198)]='mod-he'+_0x2d59ed(0xd8)+_0x2d59ed(0xed)+'w',_0x3e9a1[_0x2d59ed(0xd2)]=_0x2d59ed(0x1dd)+_0x2d59ed(0x137)+_0x2d59ed(0x14d)+_0x2d59ed(0x1a8),_0x3e9a1[_0x2d59ed(0xf2)]='show';const _0x63dbc8=_0x3e9a1,_0x17508b={};document[_0x2d59ed(0x128)+_0x2d59ed(0xc5)+_0x2d59ed(0x11c)](_0x63dbc8[_0x2d59ed(0x104)])[_0x2d59ed(0x130)+'h'](_0x36965a=>{const _0x3505c5=_0x2d59ed;_0x36965a[_0x3505c5(0x1fc)+'t'][_0x3505c5(0xdd)+'mKey']&&(_0x17508b[_0x36965a[_0x3505c5(0x1fc)+'t'][_0x3505c5(0xdd)+_0x3505c5(0x11b)]]=!![]);});const _0x78373e=!!_0x17508b[_0x63dbc8['opuFt']],_0x8f8fe=!!_0x17508b['rhinor'+_0x2d59ed(0x180)],_0x247484=!!_0x17508b[_0x63dbc8[_0x2d59ed(0x135)]],_0x1495f4=!!_0x17508b[_0x63dbc8[_0x2d59ed(0x150)]],_0x4f84ed=!!_0x17508b[_0x2d59ed(0x1d5)],_0x551dfc=!!_0x17508b[_0x63dbc8[_0x2d59ed(0x1a1)]],_0x4dd253=!!_0x17508b[_0x63dbc8[_0x2d59ed(0x179)]],_0x48a470=!!_0x17508b[_0x63dbc8[_0x2d59ed(0x1c5)]],_0x3bfc89=!!_0x17508b[_0x63dbc8[_0x2d59ed(0x1de)]];document[_0x2d59ed(0x1a5)+_0x2d59ed(0xab)+'Id'](_0x63dbc8[_0x2d59ed(0x1ca)])[_0x2d59ed(0x1b2)][_0x2d59ed(0x1af)+'y']=_0x78373e?_0x63dbc8[_0x2d59ed(0x1e7)]:_0x63dbc8[_0x2d59ed(0x1ec)],document['getEle'+_0x2d59ed(0xab)+'Id']('mod-rh'+_0x2d59ed(0x1d0)+'ea-row')[_0x2d59ed(0x1b2)]['displa'+'y']=_0x8f8fe?_0x63dbc8[_0x2d59ed(0x1e7)]:_0x2d59ed(0x109),document[_0x2d59ed(0x1a5)+_0x2d59ed(0xab)+'Id'](_0x63dbc8[_0x2d59ed(0x17f)])[_0x2d59ed(0x1b2)][_0x2d59ed(0x1af)+'y']=_0x247484?_0x63dbc8[_0x2d59ed(0x1e7)]:_0x63dbc8[_0x2d59ed(0x1ec)],document[_0x2d59ed(0x1a5)+_0x2d59ed(0xab)+'Id'](_0x63dbc8['Zqbnt'])['style'][_0x2d59ed(0x1af)+'y']=_0x1495f4?_0x63dbc8[_0x2d59ed(0x1e7)]:_0x63dbc8[_0x2d59ed(0x1ec)],document[_0x2d59ed(0x1a5)+_0x2d59ed(0xab)+'Id'](_0x2d59ed(0xda)+_0x2d59ed(0xcc)+'w')[_0x2d59ed(0x1b2)][_0x2d59ed(0x1af)+'y']=_0x4f84ed?_0x63dbc8[_0x2d59ed(0x1e7)]:_0x2d59ed(0x109),document[_0x2d59ed(0x1a5)+_0x2d59ed(0xab)+'Id'](_0x63dbc8[_0x2d59ed(0xfc)])[_0x2d59ed(0x1b2)][_0x2d59ed(0x1af)+'y']=_0x551dfc?_0x2d59ed(0x98):_0x63dbc8[_0x2d59ed(0x1ec)],document['getEle'+_0x2d59ed(0xab)+'Id'](_0x63dbc8[_0x2d59ed(0xf5)])[_0x2d59ed(0x1b2)][_0x2d59ed(0x1af)+'y']=_0x4dd253?_0x63dbc8[_0x2d59ed(0x1e7)]:_0x2d59ed(0x109),document[_0x2d59ed(0x1a5)+_0x2d59ed(0xab)+'Id'](_0x63dbc8[_0x2d59ed(0xef)])[_0x2d59ed(0x1b2)][_0x2d59ed(0x1af)+'y']=_0x48a470?_0x63dbc8[_0x2d59ed(0x1e7)]:_0x63dbc8[_0x2d59ed(0x1ec)],document[_0x2d59ed(0x1a5)+_0x2d59ed(0xab)+'Id'](_0x63dbc8[_0x2d59ed(0x198)])['style'][_0x2d59ed(0x1af)+'y']=_0x3bfc89?_0x63dbc8['MoGDp']:_0x63dbc8[_0x2d59ed(0x1ec)];const _0x4aeb11=document[_0x2d59ed(0x1a5)+_0x2d59ed(0xab)+'Id'](_0x63dbc8[_0x2d59ed(0xd2)]);_0x78373e||_0x8f8fe||_0x247484||_0x1495f4||_0x4f84ed||_0x551dfc||_0x4dd253||_0x48a470||_0x3bfc89?_0x4aeb11[_0x2d59ed(0x101)+'ist']['add'](_0x63dbc8[_0x2d59ed(0xf2)]):_0x4aeb11[_0x2d59ed(0x101)+_0x2d59ed(0x134)][_0x2d59ed(0x1b0)](_0x63dbc8[_0x2d59ed(0xf2)]);}function addCustomSymptom(){const _0xc3e004=_0x299a5a,_0x3c2907={'nXGeF':_0xc3e004(0x19c)+_0xc3e004(0x127)+_0xc3e004(0x16d)+'ut','YKnZy':_0xc3e004(0xdd)+_0xc3e004(0x11d)+'d','UOTTD':'label','HXPDJ':_0xc3e004(0x171)+'ox-lab'+'el\x20cus'+_0xc3e004(0x146)+_0xc3e004(0x1e6)+_0xc3e004(0xb3),'UAvyN':_0xc3e004(0x159),'YQxPB':function(_0x1fa160){return _0x1fa160();}},_0x3678e2=document['getEle'+_0xc3e004(0xab)+'Id'](_0x3c2907[_0xc3e004(0x13b)]),_0x5b7cdb=_0x3678e2[_0xc3e004(0x144)][_0xc3e004(0x1b3)]();if(!_0x5b7cdb)return;const _0x54f0f4=document[_0xc3e004(0x1a5)+_0xc3e004(0xab)+'Id'](_0x3c2907[_0xc3e004(0x1c9)]),_0xaf1445=systemData[activeSystemKey],_0x774e15=_0xaf1445[_0xc3e004(0x199)+_0xc3e004(0x1aa)]?_0x5b7cdb:_0x5b7cdb+_0xc3e004(0x114),_0x24eb78=document[_0xc3e004(0x123)+'Elemen'+'t'](_0x3c2907['UOTTD']);_0x24eb78[_0xc3e004(0x188)+_0xc3e004(0x195)]=_0x3c2907[_0xc3e004(0x194)];const _0xa9705e=document['create'+_0xc3e004(0x18d)+'t'](_0x3c2907[_0xc3e004(0x15b)]);_0xa9705e[_0xc3e004(0x1fd)]=_0xc3e004(0x171)+'ox',_0xa9705e[_0xc3e004(0x144)]=_0x774e15,_0xa9705e[_0xc3e004(0x139)+'ge']=handleSymptomChange,_0x24eb78['append'+_0xc3e004(0x105)](_0xa9705e),_0x24eb78[_0xc3e004(0x10b)+_0xc3e004(0x105)](document[_0xc3e004(0x123)+_0xc3e004(0x170)+'de']('\x20'+_0x5b7cdb)),_0x54f0f4[_0xc3e004(0x10b)+_0xc3e004(0x105)](_0x24eb78),_0x3678e2[_0xc3e004(0x144)]='',_0x3c2907[_0xc3e004(0x1ad)](generateText);}function handleKeyPress(_0x110c52){const _0x1f7951=_0x299a5a,_0x54f666={};_0x54f666[_0x1f7951(0x157)]=function(_0x44cd68,_0x42ae35){return _0x44cd68===_0x42ae35;};const _0xff08f9=_0x54f666;_0xff08f9[_0x1f7951(0x157)](_0x110c52[_0x1f7951(0x12a)],_0x1f7951(0x1d9))&&(_0x110c52[_0x1f7951(0x10e)+_0x1f7951(0x140)+'lt'](),addCustomSymptom());}function getFormattedDate(){const _0x6cb18=_0x299a5a,_0x3734b0={'Trcck':function(_0x2c8a4a,_0x2a38eb){return _0x2c8a4a+_0x2a38eb;},'PXKSg':function(_0x3cb17e,_0x414bf5){return _0x3cb17e(_0x414bf5);}},_0x1ebb1e=new Date(),_0x41aed6=_0x1ebb1e[_0x6cb18(0x1ea)+_0x6cb18(0x15c)](),_0x2b6327=String(_0x3734b0[_0x6cb18(0xe4)](_0x1ebb1e[_0x6cb18(0x1b9)+'th'](),-0x859+0xec+0x76e))[_0x6cb18(0x12b)+'rt'](0x1edc+-0x1*0x20ed+0x213,'0'),_0x4b3141=_0x3734b0[_0x6cb18(0x1f3)](String,_0x1ebb1e[_0x6cb18(0x201)+'e']())[_0x6cb18(0x12b)+'rt'](0x10ba+-0x1926+0x86e,'0');return''+_0x41aed6+_0x2b6327+_0x4b3141;}function generateText(){const _0x4eddda=_0x299a5a,_0x298e5b={'bLBlM':function(_0x325533,_0x598b74){return _0x325533===_0x598b74;},'gqNJF':_0x4eddda(0x1a3)+'he','uhFSA':_0x4eddda(0xb0)+_0x4eddda(0x17b),'bxDrd':'Headac'+_0x4eddda(0x1e4),'TQTjE':function(_0x73f02d,_0x180506){return _0x73f02d+_0x180506;},'OrtPu':'rhinor'+'rhea','SSTcJ':_0x4eddda(0x142)+_0x4eddda(0x1d0)+'ea','eYLGg':function(_0x472c23,_0x449718){return _0x472c23===_0x449718;},'hJjpe':_0x4eddda(0x187)+'rhea\x20('+'+)','CUegI':function(_0x2b31af,_0x562c6d){return _0x2b31af===_0x562c6d;},'bUOwk':_0x4eddda(0x16a),'HFNCD':_0x4eddda(0x16e)+_0x4eddda(0x1d3),'pDJam':function(_0x44b243,_0x4ace74){return _0x44b243===_0x4ace74;},'yatJk':_0x4eddda(0xa0)+_0x4eddda(0xdf),'ptEEK':function(_0x467c4f,_0x185e6e){return _0x467c4f+_0x185e6e;},'eAwgI':function(_0x4ece06,_0x58df38){return _0x4ece06===_0x58df38;},'yTOwt':_0x4eddda(0x118),'SzvTq':'Sputum'+_0x4eddda(0x114),'hklqa':_0x4eddda(0x1fa)+_0x4eddda(0xdf),'knfvb':function(_0x4787c2,_0x5ca531){return _0x4787c2===_0x5ca531;},'BtPcv':function(_0x231010,_0x152f5c){return _0x231010===_0x152f5c;},'XNvhi':_0x4eddda(0x13c)+_0x4eddda(0xcf)+_0x4eddda(0x1ed),'kRDgu':_0x4eddda(0x1d8)+'ng','raTZt':function(_0x51e8ba,_0x199efb){return _0x51e8ba===_0x199efb;},'wrPBP':_0x4eddda(0x126)+'us','rcNVV':_0x4eddda(0x164)+_0x4eddda(0x1b1),'xGkdK':function(_0x195398,_0x27682e){return _0x195398===_0x27682e;},'zVSpZ':_0x4eddda(0x119)+_0x4eddda(0x91),'aToAW':_0x4eddda(0x132)+_0x4eddda(0xd8)+'oss','HpOSK':function(_0x1d0665,_0x590aee){return _0x1d0665===_0x590aee;},'XQFYE':_0x4eddda(0x1a4)+_0x4eddda(0x91)+_0x4eddda(0x114),'Isiqo':'durati'+'on','JxCKq':'#sympt'+_0x4eddda(0x18f)+_0x4eddda(0xea)+_0x4eddda(0x152)+_0x4eddda(0x1c2)+_0x4eddda(0x18c)+_0x4eddda(0x1ae)+_0x4eddda(0x100),'gaIuj':function(_0x35430b){return _0x35430b();},'RESfC':function(_0x196ede,_0x10a7a0){return _0x196ede+_0x10a7a0;},'lyNNW':_0x4eddda(0x13d)+'e\x20refi'+_0x4eddda(0x15d)+_0x4eddda(0xe8)+'n.','uVPQv':function(_0x3557af,_0x288556){return _0x3557af>_0x288556;},'RAbhY':_0x4eddda(0xa3)+_0x4eddda(0x1bd),'RYJDA':function(_0x4f5f6a,_0x4831ca){return _0x4f5f6a!==_0x4831ca;},'otzPk':_0x4eddda(0xa5)},_0x531a99=document[_0x4eddda(0x1a5)+'mentBy'+'Id'](_0x298e5b[_0x4eddda(0x9d)])[_0x4eddda(0x144)],_0xe7a6e3=document['getEle'+_0x4eddda(0xab)+'Id'](_0x4eddda(0x1e3))['value'],_0x5387f4=document[_0x4eddda(0x128)+_0x4eddda(0xc5)+_0x4eddda(0x11c)](_0x298e5b[_0x4eddda(0x13a)]);let _0x4ec1be=[];_0x5387f4[_0x4eddda(0x130)+'h'](_0xd886e0=>{const _0x10e15e=_0x4eddda;let _0x3f7551=_0xd886e0[_0x10e15e(0x144)];const _0x24bdf9=_0xd886e0[_0x10e15e(0x1fc)+'t'][_0x10e15e(0xdd)+_0x10e15e(0x11b)];if(_0x298e5b[_0x10e15e(0x189)](_0x24bdf9,_0x298e5b[_0x10e15e(0xce)])){const _0x1a8fe8=document[_0x10e15e(0x1a5)+'mentBy'+'Id'](_0x10e15e(0x132)+_0x10e15e(0x19a))[_0x10e15e(0x144)];_0x3f7551=_0x298e5b[_0x10e15e(0x189)](_0x1a8fe8,_0x298e5b[_0x10e15e(0x1ee)])?_0x298e5b[_0x10e15e(0xee)]:_0x298e5b[_0x10e15e(0x147)](_0x1a8fe8[_0x10e15e(0x113)](0x1ecf+-0xd6f+-0x10*0x116)[_0x10e15e(0x1be)+_0x10e15e(0x155)](),_0x1a8fe8[_0x10e15e(0x1cc)](-0x1e20+-0x166c+0x348d*0x1))+(_0x10e15e(0x92)+'che\x20(+'+')');}else{if(_0x24bdf9===_0x298e5b[_0x10e15e(0xfb)]){const _0x39ea88=document[_0x10e15e(0x1a5)+_0x10e15e(0xab)+'Id'](_0x298e5b[_0x10e15e(0x97)])[_0x10e15e(0x144)];_0x3f7551=_0x298e5b[_0x10e15e(0xa2)](_0x39ea88,_0x298e5b['uhFSA'])?_0x298e5b[_0x10e15e(0x103)]:_0x10e15e(0x187)+'rhea\x20('+_0x39ea88+_0x10e15e(0x95);}else{if(_0x298e5b[_0x10e15e(0xc3)](_0x24bdf9,_0x298e5b[_0x10e15e(0x12f)])){const _0xe1f302=document[_0x10e15e(0x1a5)+_0x10e15e(0xab)+'Id'](_0x298e5b[_0x10e15e(0x1c6)])[_0x10e15e(0x144)];_0x3f7551=_0x298e5b[_0x10e15e(0x167)](_0xe1f302,_0x298e5b[_0x10e15e(0x1ee)])?_0x298e5b[_0x10e15e(0x17a)]:_0x298e5b['ptEEK'](_0xe1f302[_0x10e15e(0x113)](-0xf2a+-0x139c+0x22c6)[_0x10e15e(0x1be)+'rCase'](),_0xe1f302[_0x10e15e(0x1cc)](0x29a+0x4*0x2c4+-0x1*0xda9))+_0x10e15e(0x114);}else{if(_0x298e5b[_0x10e15e(0x1b4)](_0x24bdf9,_0x298e5b['yTOwt'])){const _0xee57fd=document[_0x10e15e(0x1a5)+'mentBy'+'Id'](_0x10e15e(0x17d)+_0x10e15e(0x1d7))[_0x10e15e(0x144)];_0x3f7551=_0x298e5b[_0x10e15e(0x189)](_0xee57fd,_0x10e15e(0xb0)+_0x10e15e(0x17b))?_0x298e5b[_0x10e15e(0x1f1)]:_0x10e15e(0xb4)+_0x10e15e(0x190)+_0x10e15e(0x12c)+'('+_0xee57fd+_0x10e15e(0x95);}else{if(_0x298e5b[_0x10e15e(0xa2)](_0x24bdf9,_0x10e15e(0x1d5))){const _0x1e1109=document[_0x10e15e(0x1a5)+_0x10e15e(0xab)+'Id'](_0x10e15e(0xda)+_0x10e15e(0x1cd))[_0x10e15e(0x144)];_0x3f7551=_0x298e5b['eYLGg'](_0x1e1109,_0x298e5b[_0x10e15e(0x1ee)])?_0x298e5b['hklqa']:_0x1e1109+_0x10e15e(0x114);}else{if(_0x298e5b[_0x10e15e(0x14f)](_0x24bdf9,_0x10e15e(0xc1)+'nal\x20pa'+'in')){const _0x2ca900=document[_0x10e15e(0x1a5)+_0x10e15e(0xab)+'Id'](_0x10e15e(0x18b)+_0x10e15e(0xe5))[_0x10e15e(0x144)];_0x3f7551=_0x298e5b[_0x10e15e(0x117)](_0x2ca900,_0x298e5b['uhFSA'])?_0x298e5b[_0x10e15e(0xa1)]:_0x10e15e(0x13c)+_0x10e15e(0xcf)+_0x10e15e(0x169)+_0x2ca900+_0x10e15e(0x95);}else{if(_0x298e5b[_0x10e15e(0x14f)](_0x24bdf9,_0x298e5b[_0x10e15e(0x177)])){const _0xea0e4c=document['getEle'+_0x10e15e(0xab)+'Id'](_0x10e15e(0x18e)+_0x10e15e(0x145))[_0x10e15e(0x144)];_0x3f7551=_0x298e5b[_0x10e15e(0x1a0)](_0xea0e4c,_0x298e5b[_0x10e15e(0x1ee)])?_0x10e15e(0x1c7)+_0x10e15e(0xe9):_0x10e15e(0x1c7)+_0x10e15e(0x1c4)+_0xea0e4c+_0x10e15e(0x95);}else{if(_0x24bdf9===_0x298e5b[_0x10e15e(0xf0)]){const _0x3550e0=document[_0x10e15e(0x1a5)+_0x10e15e(0xab)+'Id'](_0x298e5b[_0x10e15e(0xcb)])[_0x10e15e(0x144)];_0x3f7551=_0x3550e0===_0x298e5b[_0x10e15e(0x1ee)]?_0x10e15e(0x111)+_0x10e15e(0x1ab):'Tinnit'+_0x10e15e(0x161)+_0x3550e0+_0x10e15e(0x95);}else{if(_0x298e5b['xGkdK'](_0x24bdf9,_0x298e5b[_0x10e15e(0xf3)])){const _0x5c1c88=document[_0x10e15e(0x1a5)+_0x10e15e(0xab)+'Id'](_0x298e5b[_0x10e15e(0x19f)])[_0x10e15e(0x144)];_0x3f7551=_0x298e5b[_0x10e15e(0xa9)](_0x5c1c88,_0x298e5b[_0x10e15e(0x1ee)])?_0x298e5b[_0x10e15e(0x12e)]:_0x10e15e(0x1a4)+_0x10e15e(0x91)+'\x20('+_0x5c1c88+_0x10e15e(0x95);}}}}}}}}}_0x4ec1be[_0x10e15e(0xc9)](_0x3f7551);});const _0x35b45f=systemData[activeSystemKey],_0x25d33d='-\x20'+_0x298e5b[_0x4eddda(0xf6)](getFormattedDate)+'\x20';let _0x17b470='';if(_0x35b45f[_0x4eddda(0x199)+_0x4eddda(0x1aa)])_0x17b470=_0x4ec1be[_0x4eddda(0x129)]>0x1af*0x3+0x35*-0x96+0x1a01?_0x298e5b[_0x4eddda(0x148)](_0x4ec1be[_0x4eddda(0xaf)](',\x20'),'.'):_0x298e5b[_0x4eddda(0x19d)];else{let _0x5a13b5=_0x298e5b[_0x4eddda(0x1d1)](_0x4ec1be[_0x4eddda(0x129)],-0x4*0x8c6+0xf2f+-0x6a3*-0x3)?_0x4ec1be[_0x4eddda(0xaf)](',\x20'):_0x298e5b[_0x4eddda(0x12d)],_0x222e69=_0x298e5b['RYJDA'](_0xe7a6e3,_0x298e5b['uhFSA'])?'\x20with\x20'+_0xe7a6e3:'';_0x17b470=_0x5a13b5+'\x20'+_0x531a99+_0x222e69+'.';}document['getEle'+_0x4eddda(0xab)+'Id'](_0x298e5b[_0x4eddda(0x175)])[_0x4eddda(0x144)]=_0x25d33d+_0x17b470;}function copyToClipboard(){const _0x50ed8a=_0x299a5a,_0x30c04b={'BpmKz':_0x50ed8a(0x96),'gNtzU':'output','qicyH':_0x50ed8a(0x11a),'ULFlX':_0x50ed8a(0xcd),'GtgSB':function(_0x14ba50,_0x6396e8,_0x12267e){return _0x14ba50(_0x6396e8,_0x12267e);}},_0x17499d=document['getEle'+_0x50ed8a(0xab)+'Id'](_0x30c04b[_0x50ed8a(0x19e)]);if(!_0x17499d[_0x50ed8a(0x144)])return;_0x17499d[_0x50ed8a(0x154)](),document[_0x50ed8a(0x162)+_0x50ed8a(0xb2)](_0x30c04b[_0x50ed8a(0xd0)]);const _0x2e358a=document['getEle'+_0x50ed8a(0xab)+'Id'](_0x30c04b[_0x50ed8a(0xa8)]);_0x2e358a[_0x50ed8a(0x101)+_0x50ed8a(0x134)][_0x50ed8a(0xfa)](_0x30c04b[_0x50ed8a(0x10c)]),_0x30c04b[_0x50ed8a(0x151)](setTimeout,()=>{const _0x59d0c7=_0x50ed8a;_0x2e358a[_0x59d0c7(0x101)+_0x59d0c7(0x134)][_0x59d0c7(0x1b0)](_0x30c04b[_0x59d0c7(0x10c)]);},-0x272*-0xd+0x24d9*0x1+-0x1*0x3cd3);}function clearAll(){const _0x158ac8=_0x299a5a,_0x5cea56={'Uouug':_0x158ac8(0x1d4)+_0x158ac8(0x18f)+_0x158ac8(0xea)+_0x158ac8(0x152)+'e=\x22che'+_0x158ac8(0x18c)+']','TDVcq':_0x158ac8(0x1e8)+_0x158ac8(0x1e9)+_0x158ac8(0xf7)+_0x158ac8(0x184),'DgenX':_0x158ac8(0xc0)+_0x158ac8(0x166)+_0x158ac8(0x1ba)+'ct','XHQOv':function(_0x23d254){return _0x23d254();},'YFynn':_0x158ac8(0x1b6)+'on','BpuEd':_0x158ac8(0x1e3)};document[_0x158ac8(0x128)+_0x158ac8(0xc5)+_0x158ac8(0x11c)](_0x5cea56[_0x158ac8(0xfd)])['forEac'+'h'](_0x4e43bd=>_0x4e43bd[_0x158ac8(0x1e0)+'d']=![]),document[_0x158ac8(0x128)+_0x158ac8(0xc5)+_0x158ac8(0x11c)](_0x5cea56[_0x158ac8(0x1f4)])[_0x158ac8(0x130)+'h'](_0x3a0349=>_0x3a0349[_0x158ac8(0x1b0)]()),document[_0x158ac8(0x128)+'electo'+_0x158ac8(0x11c)](_0x5cea56[_0x158ac8(0xca)])[_0x158ac8(0x130)+'h'](_0x590633=>_0x590633[_0x158ac8(0x154)+_0x158ac8(0xff)+'x']=-0x49e+-0x2b9*0x1+0x757),_0x5cea56[_0x158ac8(0x174)](updateModifiersVisibility),document['getEle'+_0x158ac8(0xab)+'Id'](_0x5cea56[_0x158ac8(0x116)])[_0x158ac8(0x154)+_0x158ac8(0xff)+'x']=0xa51+0x1c62+-0x26b2,document[_0x158ac8(0x1a5)+_0x158ac8(0xab)+'Id'](_0x5cea56['BpuEd'])[_0x158ac8(0x154)+_0x158ac8(0xff)+'x']=0x1*0x1617+0x1*-0xe0e+-0xb*0xbb,generateText();}initUI(),window[_0x299a5a(0x108)]=initUI,window[_0x299a5a(0x154)+_0x299a5a(0x1f6)]=selectSystem,window[_0x299a5a(0x1f0)+'Sympto'+_0x299a5a(0xc7)+'e']=handleSymptomChange,window[_0x299a5a(0xb5)+_0x299a5a(0x193)+_0x299a5a(0x1dc)]=addCustomSymptom,window['handle'+_0x299a5a(0x1c0)+'ss']=handleKeyPress,window[_0x299a5a(0xf1)+_0x299a5a(0x182)]=generateText,window[_0x299a5a(0x9c)+_0x299a5a(0x1b8)+'ard']=copyToClipboard,window[_0x299a5a(0x1a6)+'ll']=clearAll;
+</script>
 
-        // Prevent potentially malicious URLs from being used
-        if (returnUrl.protocol.toLowerCase() === 'javascript:') {
-          console.error('Potentially malicious return URL blocked');
-          return;
-        }
-
-        if (storageAccessGranted) {
-          returnUrl.searchParams.set('__storage_access_granted', '1');
-        }
-
-        if (autoClose) {
-          returnUrl.searchParams.set('__auto_close', '1');
-          const url = new URL(window.location.href);
-          url.searchParams.set('return_url', returnUrl.toString());
-          // Land on the cookie check page first, so the user can interact with it before proceeding
-          // to the return url where cookies can be set.
-          window.open(url.toString(), '_blank');
-          const hasAccess = await document.hasStorageAccess();
-          document.querySelector('#stepOne').classList.add('hidden');
-          if (!hasAccess) {
-            document.querySelector('#stepThree').classList.remove('hidden');
-          } else {
-            window.location.reload();
-          }
-        } else {
-          window.location.href = returnUrl.toString();
-        }
-      }
-
-      /**
-       * Grants the browser permission to set cookies. If successful, then it redirects to the
-       * return url.
-       */
-      async function grantStorageAccess() {
-        try {
-          await document.requestStorageAccess();
-          // Recent Safari/iOS versions block document.cookie entirely in
-          // cross-site iframes, even after requestStorageAccess(). Only
-          // server-side Set-Cookie headers work. Signal to the Lua auth script
-          // via query param so it can set the test cookie server-side.
-          redirectToReturnUrl(false, /* storageAccessGranted= */ true);
-        } catch (err) {
-          console.log('error after button click: ', err);
-        }
-      }
-
-      /**
-       * Verifies that the browser can set cookies. If it can, then it redirects to the return url.
-       * If it can't, then it shows the error UI.
-       */
-      function verifyCanSetCookies() {
-        setAuthFlowTestCookie();
-        if (authFlowTestCookieIsSet()) {
-          // Check if we are on the auto-close flow, and if so show the interact button.
-          const returnUrl = new URLSearchParams(window.location.search).get('return_url');
-          const autoClose = new URL(returnUrl).searchParams.has('__auto_close');
-          if (autoClose) {
-            document.querySelector('#stepOne').classList.add('hidden');
-            document.querySelector('#stepTwo').classList.remove('hidden');
-          } else {
-            redirectToReturnUrl(false);
-            return;
-          }
-        }
-        // The cookie could not be set, so initiate the recovery flow.
-        document.querySelector('.logo').classList.add('hidden');
-        document.querySelector('.spinner').classList.add('hidden');
-        document.querySelector('#error-ui').classList.remove('hidden');
-      }
-
-      // Start the cookie verification process.
-      verifyCanSetCookies();
-    </script>
-  </body>
+</body>
 </html>
